@@ -1,9 +1,8 @@
-<<<<<<< HEAD
 import numpy as np
 
-# ============================================================
+
 # MotorSim Pro Premium - Core Motor Models
-# ============================================================
+
 
 def _health_status(efficiency, current, torque, voltage, rheostat_resistance):
     score = 0
@@ -159,12 +158,11 @@ def synchronous_motor_simulation(voltage, frequency, poles, load_torque, excitat
         "Total Loss (kW)": round(total_loss, 2),
         "Efficiency (%)": round(efficiency, 2),
         "Health Status": health
-=======
-import numpy as np
+    }
 
-# ============================================================
+
 # MotorSim Pro Premium - Core Motor Models
-# ============================================================
+
 
 def _health_status(efficiency, current, torque, voltage, rheostat_resistance):
     score = 0
@@ -320,5 +318,4 @@ def synchronous_motor_simulation(voltage, frequency, poles, load_torque, excitat
         "Total Loss (kW)": round(total_loss, 2),
         "Efficiency (%)": round(efficiency, 2),
         "Health Status": health
->>>>>>> 495411d6630fddedc579571c29aae21edb9da70d
-    }
+    }    

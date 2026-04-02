@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -7,14 +6,10 @@ import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
 
-# ============================================================
 # PAGE CONFIG
-# ============================================================
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
 
-# ============================================================
 # CUSTOM STYLING
-# ============================================================
 st.markdown("""
 <style>
 /* Main app background */
@@ -160,9 +155,7 @@ header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
 # TITLE
-# ============================================================
 st.title("⚙️ MotorSim Pro")
 st.subheader("Advanced Simulation and Performance Analysis of Synchronous and Induction Motors")
 
@@ -182,9 +175,7 @@ to simulate, compare, and analyze the behavior of <b>Induction Motors</b> and <b
 </div>
 """, unsafe_allow_html=True)
 
-# ============================================================
 # SIDEBAR INPUTS
-# ============================================================
 st.sidebar.header("🔧 Input Parameters")
 
 mode = st.sidebar.radio("Select Mode", ["Single Motor Analysis", "Comparison Mode"])
@@ -227,17 +218,17 @@ elif fault_mode == "Over Frequency":
 elif fault_mode == "High Rheostat":
     fault_rheostat = min(5.0, rheostat_resistance + 2.5)
 
-# ============================================================
+
 # MOTOR RESULTS
-# ============================================================
+
 if motor_type == "Induction Motor":
     result = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, fault_load, fault_rheostat)
 else:
     result = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, excitation_factor, fault_rheostat)
 
-# ============================================================
+
 # HELPERS
-# ============================================================
+
 def recommendation_engine(result):
     recs = []
 
@@ -285,9 +276,8 @@ def gauge_chart(title, value, min_val, max_val, suffix=""):
 
 recommendations = recommendation_engine(result)
 
-# ============================================================
-# TABS
-# ============================================================
+
+# TAB
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Dashboard",
     "📈 Performance Graphs",
@@ -296,9 +286,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📤 Export"
 ])
 
-# ============================================================
+
 # TAB 1 - DASHBOARD
-# ============================================================
+
 with tab1:
     st.markdown(f"""
     <div class="section-box">
@@ -412,9 +402,9 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-# ============================================================
+
 # TAB 2 - GRAPHS
-# ============================================================
+
 with tab2:
     st.markdown("## 📈 Performance Graphs")
 
@@ -534,9 +524,9 @@ with tab2:
     ax6.grid(True)
     st.pyplot(fig6)
 
-# ============================================================
+
 # TAB 3 - 3 PHASE WAVEFORMS
-# ============================================================
+
 with tab3:
     st.markdown("## ⚡ 3-Phase Waveforms")
 
@@ -558,9 +548,9 @@ with tab3:
     axw.legend()
     st.pyplot(figw)
 
-# ============================================================
+
 # TAB 4 - COMPARISON
-# ============================================================
+
 with tab4:
     st.markdown("## 🆚 Motor Comparison")
 
@@ -593,9 +583,9 @@ with tab4:
 
     st.dataframe(comp_df, use_container_width=True)
 
-# ============================================================
+
 # TAB 5 - EXPORT
-# ============================================================
+
 with tab5:
     st.markdown("## 📤 Export Results")
 
@@ -609,7 +599,7 @@ with tab5:
         mime="text/csv"
     )
 
-=======
+
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -618,14 +608,14 @@ import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
 
-# ============================================================
+
 # PAGE CONFIG
-# ============================================================
+
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
 
-# ============================================================
+
 # CUSTOM STYLING
-# ============================================================
+
 st.markdown("""
 <style>
 /* Main app background */
@@ -771,9 +761,9 @@ header {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
-# ============================================================
+
 # TITLE
-# ============================================================
+
 st.title("⚙️ MotorSim Pro")
 st.subheader("Advanced Simulation and Performance Analysis of Synchronous and Induction Motors")
 
@@ -793,9 +783,9 @@ to simulate, compare, and analyze the behavior of <b>Induction Motors</b> and <b
 </div>
 """, unsafe_allow_html=True)
 
-# ============================================================
+
 # SIDEBAR INPUTS
-# ============================================================
+
 st.sidebar.header("🔧 Input Parameters")
 
 mode = st.sidebar.radio("Select Mode", ["Single Motor Analysis", "Comparison Mode"])
@@ -838,17 +828,17 @@ elif fault_mode == "Over Frequency":
 elif fault_mode == "High Rheostat":
     fault_rheostat = min(5.0, rheostat_resistance + 2.5)
 
-# ============================================================
+
 # MOTOR RESULTS
-# ============================================================
+
 if motor_type == "Induction Motor":
     result = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, fault_load, fault_rheostat)
 else:
     result = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, excitation_factor, fault_rheostat)
 
-# ============================================================
+
 # HELPERS
-# ============================================================
+
 def recommendation_engine(result):
     recs = []
 
@@ -896,9 +886,9 @@ def gauge_chart(title, value, min_val, max_val, suffix=""):
 
 recommendations = recommendation_engine(result)
 
-# ============================================================
+
 # TABS
-# ============================================================
+
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📊 Dashboard",
     "📈 Performance Graphs",
@@ -907,9 +897,9 @@ tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📤 Export"
 ])
 
-# ============================================================
+
 # TAB 1 - DASHBOARD
-# ============================================================
+
 with tab1:
     st.markdown(f"""
     <div class="section-box">
@@ -1023,9 +1013,9 @@ with tab1:
         </div>
         """, unsafe_allow_html=True)
 
-# ============================================================
+
 # TAB 2 - GRAPHS
-# ============================================================
+
 with tab2:
     st.markdown("## 📈 Performance Graphs")
 
@@ -1145,9 +1135,9 @@ with tab2:
     ax6.grid(True)
     st.pyplot(fig6)
 
-# ============================================================
+
 # TAB 3 - 3 PHASE WAVEFORMS
-# ============================================================
+
 with tab3:
     st.markdown("## ⚡ 3-Phase Waveforms")
 
@@ -1169,9 +1159,9 @@ with tab3:
     axw.legend()
     st.pyplot(figw)
 
-# ============================================================
+
 # TAB 4 - COMPARISON
-# ============================================================
+
 with tab4:
     st.markdown("## 🆚 Motor Comparison")
 
@@ -1204,9 +1194,9 @@ with tab4:
 
     st.dataframe(comp_df, use_container_width=True)
 
-# ============================================================
+
 # TAB 5 - EXPORT
-# ============================================================
+
 with tab5:
     st.markdown("## 📤 Export Results")
 
@@ -1220,5 +1210,5 @@ with tab5:
         mime="text/csv"
     )
 
->>>>>>> 495411d6630fddedc579571c29aae21edb9da70d
+
     st.info("You can export the current motor simulation result table as a CSV file.")
