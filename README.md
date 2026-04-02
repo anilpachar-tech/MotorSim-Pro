@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # MotorSim-Pro
 MotorSim Pro is an advanced Python-Streamlit industrial motor simulation dashboard for analyzing synchronous and induction motor performance under varying voltage, frequency, torque, slip, excitation, and rheostat conditions. It includes fault simulation, waveform analysis, comparison mode, gauges, and interactive visualizations. 
 
@@ -35,7 +35,10 @@ MotorSim Pro is a Python-based industrial motor simulation dashboard designed to
 - NumPy  
 - Pandas  
 - Matplotlib  
-- Plotly  
+- Plotly
+
+## Live Demo
+[Click Here to Open App](https://motorsim-pro-simulator.streamlit.app/)
 
 ---
 
@@ -63,7 +66,6 @@ MotorSim_Pro/
 =======
    streamlit run app.py  
  
->>>>>>> 0a5b25fda41e35eaeba7fb4751b34d3fae999c1b
 
 ---
 
@@ -91,11 +93,7 @@ This project uses simplified analytical models for simulation. It is intended fo
 ---
 
 ## 👨‍💻 Author
-<<<<<<< HEAD
-Anil Pachar & Devesh Godara
-=======
 Anil Pachar & Devesh godara
->>>>>>> 0a5b25fda41e35eaeba7fb4751b34d3fae999c1b
 Electrical Engineering Student  
 Aspiring AIML & Data Science Engineer  
 
