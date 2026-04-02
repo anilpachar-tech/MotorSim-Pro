@@ -47,7 +47,7 @@ MotorSim_Pro/
 
 ## ⚙️ Installation & Setup
 1. Clone the repository:
-   git clone https://github.com/YOUR-USERNAME/MotorSim-Pro.git  
+   git clone https://github.com/anilpachar-tech/MotorSim-Pro.git  
    cd MotorSim-Pro  
 
 2. Install dependencies:
@@ -82,7 +82,7 @@ This project uses simplified analytical models for simulation. It is intended fo
 ---
 
 ## 👨‍💻 Author
-Anil Pachar   
+Anil Pachar & Devesh Godara
 Electrical Engineering Student  
 Aspiring AIML & Data Science Engineer  
 
