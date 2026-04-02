@@ -784,28 +784,6 @@ to simulate, compare, and analyze the behavior of <b>Induction Motors</b> and <b
 """, unsafe_allow_html=True)
 
 
-# SIDEBAR INPUTS
-
-st.sidebar.header("🔧 Input Parameters")
-
-mode = st.sidebar.radio("Select Mode", ["Single Motor Analysis", "Comparison Mode"])
-
-motor_type = st.sidebar.selectbox(
-    "Select Motor Type",
-    ["Induction Motor", "Synchronous Motor"]
-)
-
-voltage = st.sidebar.slider("Applied Voltage (V)", 100, 500, 415)
-frequency = st.sidebar.slider("Supply Frequency (Hz)", 25, 100, 50)
-poles = st.sidebar.selectbox("Number of Poles", [2, 4, 6, 8], index=1)
-load_torque = st.sidebar.slider("Load Torque (Nm)", 1, 100, 20)
-rheostat_resistance = st.sidebar.slider("Rheostat Resistance (Ohm)", 0.0, 5.0, 0.5)
-
-if motor_type == "Induction Motor":
-    slip = st.sidebar.slider("Slip", 0.01, 0.20, 0.04, step=0.01)
-else:
-    excitation_factor = st.sidebar.slider("Excitation Factor", 0.8, 1.2, 1.0, step=0.05)
-
 # Fault Simulation
 st.sidebar.markdown("### ⚠ Fault Simulation")
 fault_mode = st.sidebar.selectbox(
