@@ -4,7 +4,6 @@ MotorSim Pro is an advanced Python-Streamlit industrial motor simulation dashboa
 
 =======
 # ⚙️ MotorSim Pro  
->>>>>>> 0a5b25fda41e35eaeba7fb4751b34d3fae999c1b
 ### Advanced Simulation and Performance Analysis of Synchronous and Induction Motors
 
 ---
@@ -101,8 +100,3 @@ Aspiring AIML & Data Science Engineer
 
 ## ⭐ Support
 If you found this project useful, consider giving it a star ⭐ on GitHub.
-
----
-
-## 💡 Resume Line
-Developed and deployed an interactive Python-based motor simulation dashboard for analyzing synchronous and induction motor performance using Streamlit and data visualization tools.
