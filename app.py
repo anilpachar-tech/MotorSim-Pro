@@ -5,6 +5,14 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
+from dc_motor import (
+    calculate_efficiency as dc_calculate_efficiency,
+    calculate_speed as dc_calculate_speed,
+    calculate_stall_current,
+    calculate_stall_torque,
+    calculate_torque as dc_calculate_torque,
+    simulate_step_response,
+)
 
 # PAGE CONFIG
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
@@ -177,6 +185,143 @@ to simulate, compare, and analyze the behavior of <b>Induction Motors</b> and <b
 
 # SIDEBAR INPUTS
 st.sidebar.header("🔧 Input Parameters")
+
+analysis_domain = st.sidebar.radio("Simulation Domain", ["AC Motors", "DC Motor"], index=0)
+
+
+def render_dc_module() -> None:
+    st.title("🔋 MotorSim Pro — DC Motor Studio")
+    st.subheader("Speed, Torque, Efficiency, and Step Response")
+    st.info("You are in DC Motor mode. Use the controls below to run DC motor calculations and transient analysis.")
+
+    preset = st.selectbox(
+        "DC Motor Preset",
+        ["Custom", "Lab Motor 12V", "High Torque 24V"],
+        index=0,
+    )
+
+    preset_map = {
+        "Custom": dict(voltage=12.0, current=3.0, resistance=2.0, flux=0.05, k=0.1, kt=0.1, L=0.5, J=0.01, b=0.001),
+        "Lab Motor 12V": dict(voltage=12.0, current=2.5, resistance=1.8, flux=0.06, k=0.12, kt=0.11, L=0.4, J=0.009, b=0.0012),
+        "High Torque 24V": dict(voltage=24.0, current=6.0, resistance=1.2, flux=0.08, k=0.11, kt=0.18, L=0.35, J=0.015, b=0.0015),
+    }
+    base = preset_map[preset]
+
+    col_in_1, col_in_2, col_in_3 = st.columns(3)
+
+    with col_in_1:
+        dc_voltage = st.number_input("DC Voltage (V)", min_value=0.0, value=base["voltage"], step=0.5)
+        dc_current = st.number_input("DC Current (A)", min_value=0.0, value=base["current"], step=0.1)
+        dc_resistance = st.number_input("Armature Resistance (Ω)", min_value=0.0, value=base["resistance"], step=0.1)
+
+    with col_in_2:
+        dc_flux = st.number_input("Field Flux (Wb)", min_value=0.001, value=base["flux"], step=0.001)
+        dc_k = st.number_input("Motor Constant K", min_value=0.001, value=base["k"], step=0.01)
+        dc_kt = st.number_input("Torque Constant Kt (N·m/A)", min_value=0.001, value=base["kt"], step=0.01)
+
+    with col_in_3:
+        dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=base["L"], step=0.01)
+        dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=base["J"], step=0.001, format="%.4f")
+        dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=base["b"], step=0.0001, format="%.4f")
+
+    try:
+        dc_speed = dc_calculate_speed(dc_voltage, dc_current, dc_resistance, dc_flux, dc_k)
+        dc_torque = dc_calculate_torque(dc_current, dc_kt)
+        dc_eff = dc_calculate_efficiency(dc_voltage, dc_current, dc_torque, dc_speed)
+
+        stall_current = calculate_stall_current(dc_voltage, dc_resistance)
+        stall_torque = calculate_stall_torque(dc_voltage, dc_resistance, dc_kt)
+
+        r1, r2, r3, r4, r5 = st.columns(5)
+        r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
+        r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
+        r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
+        r4.metric("Stall Current (A)", "∞" if not np.isfinite(stall_current) else f"{stall_current:.2f}")
+        r5.metric("Stall Torque (N·m)", "∞" if not np.isfinite(stall_torque) else f"{stall_torque:.2f}")
+
+        t_dc, rpm_dc = simulate_step_response(
+            resistance=dc_resistance,
+            inductance=dc_L,
+            back_emf_const=dc_k,
+            inertia=dc_J,
+            damping=dc_b,
+            voltage_step=dc_voltage,
+            t_end=2.0,
+        )
+
+        fig_dc, ax_dc = plt.subplots(figsize=(9, 4))
+        ax_dc.plot(t_dc, rpm_dc, linewidth=2, color="#38bdf8")
+        ax_dc.set_title("DC Motor Step Response (Speed vs Time)")
+        ax_dc.set_xlabel("Time (s)")
+        ax_dc.set_ylabel("Speed (RPM)")
+        ax_dc.grid(True, alpha=0.3)
+        st.pyplot(fig_dc)
+
+        col_plot_1, col_plot_2 = st.columns(2)
+
+        with col_plot_1:
+            st.markdown("#### Torque–Speed Curve")
+            n_no_load = max(dc_calculate_speed(dc_voltage, 0.0, dc_resistance, dc_flux, dc_k), 1e-6)
+            speed_axis = np.linspace(0, n_no_load, 100)
+            torque_axis = stall_torque * (1 - speed_axis / n_no_load) if np.isfinite(stall_torque) else np.zeros_like(speed_axis)
+            fig_ts, ax_ts = plt.subplots(figsize=(6, 4))
+            ax_ts.plot(speed_axis, torque_axis, label="Theoretical Torque-Speed")
+            ax_ts.scatter([dc_speed], [dc_torque], color="red", label="Operating Point")
+            ax_ts.set_xlabel("Speed (RPM)")
+            ax_ts.set_ylabel("Torque (N·m)")
+            ax_ts.grid(True, alpha=0.3)
+            ax_ts.legend()
+            st.pyplot(fig_ts)
+
+        with col_plot_2:
+            st.markdown("#### Voltage Sweep (Speed Sensitivity)")
+            volt_axis = np.linspace(max(1.0, dc_voltage * 0.5), dc_voltage * 1.5 if dc_voltage > 0 else 24.0, 30)
+            speed_sweep = [dc_calculate_speed(v, dc_current, dc_resistance, dc_flux, dc_k) for v in volt_axis]
+            fig_vs, ax_vs = plt.subplots(figsize=(6, 4))
+            ax_vs.plot(volt_axis, speed_sweep)
+            ax_vs.set_xlabel("Voltage (V)")
+            ax_vs.set_ylabel("Speed (RPM)")
+            ax_vs.grid(True, alpha=0.3)
+            st.pyplot(fig_vs)
+
+        st.markdown("#### Energy & Cost Estimator")
+        ec1, ec2 = st.columns(2)
+        with ec1:
+            run_hours = st.number_input("Runtime (hours)", min_value=0.0, value=2.0, step=0.5)
+        with ec2:
+            rate = st.number_input("Electricity Rate ($/kWh)", min_value=0.0, value=0.15, step=0.01)
+        energy_kwh = (dc_voltage * dc_current * run_hours) / 1000.0
+        estimated_cost = energy_kwh * rate
+        st.write(f"Estimated Energy: **{energy_kwh:.3f} kWh** | Estimated Cost: **${estimated_cost:.3f}**")
+
+        dc_summary = pd.DataFrame(
+            {
+                "Metric": ["Speed (RPM)", "Torque (N·m)", "Efficiency (%)", "Stall Current (A)", "Stall Torque (N·m)", "Energy (kWh)", "Cost ($)"],
+                "Value": [
+                    round(dc_speed, 3),
+                    round(dc_torque, 3),
+                    round(dc_eff, 3),
+                    "inf" if not np.isfinite(stall_current) else round(stall_current, 3),
+                    "inf" if not np.isfinite(stall_torque) else round(stall_torque, 3),
+                    round(energy_kwh, 4),
+                    round(estimated_cost, 4),
+                ],
+            }
+        )
+        st.dataframe(dc_summary, use_container_width=True)
+        st.download_button(
+            "📥 Download DC Summary CSV",
+            data=dc_summary.to_csv(index=False).encode("utf-8"),
+            file_name="dc_motor_summary.csv",
+            mime="text/csv",
+        )
+    except ValueError as exc:
+        st.error(f"Invalid DC motor inputs: {exc}")
+
+
+if analysis_domain == "DC Motor":
+    render_dc_module()
+    st.stop()
 
 mode = st.sidebar.radio("Select Mode", ["Single Motor Analysis", "Comparison Mode"])
 
