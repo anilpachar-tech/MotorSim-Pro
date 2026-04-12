@@ -38,6 +38,9 @@ MotorSim-Pro/
    ```bash
    streamlit run app.py
    ```
+3. In the sidebar, choose **Simulation Domain**:
+   - **AC Motors** for induction/synchronous dashboard
+   - **DC Motor** for DC calculator and step-response view
 
 ## Documentation
 - Executive summary and proposed roadmap: [`docs/executive_summary.md`](docs/executive_summary.md)
