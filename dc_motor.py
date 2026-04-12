@@ -33,6 +33,7 @@ def calculate_efficiency(voltage: float, current: float, torque: float, speed_rp
 
     omega = speed_rpm * (2 * np.pi / 60)
     pout = torque * omega
+
     efficiency = float((pout / pin) * 100)
     return max(0.0, min(efficiency, 100.0))
 
@@ -52,6 +53,8 @@ def calculate_stall_torque(voltage: float, resistance: float, torque_const: floa
         raise ValueError("Invalid torque constant for stall torque calculation.")
     current = calculate_stall_current(voltage, resistance)
     return float(current * torque_const) if np.isfinite(current) else float("inf")
+    return float((pout / pin) * 100)
+ main
 
 
 def simulate_step_response(

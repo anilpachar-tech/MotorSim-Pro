@@ -6,6 +6,21 @@ import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
 from dc_motor import calculate_efficiency as dc_calculate_efficiency, calculate_speed as dc_calculate_speed, calculate_stall_current, calculate_stall_torque, calculate_torque as dc_calculate_torque, simulate_step_response
+from dc_motor import (
+    calculate_efficiency as dc_calculate_efficiency,
+    calculate_speed as dc_calculate_speed,
+ codex/add-new-features-to-motorsim-pro-k3wq3e
+    calculate_stall_current,
+    calculate_stall_torque,
+
+ 
+    calculate_stall_current,
+    calculate_stall_torque,
+ main
+ main
+    calculate_torque as dc_calculate_torque,
+    simulate_step_response,
+)
 
 # PAGE CONFIG
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
@@ -187,6 +202,7 @@ def render_dc_module() -> None:
     st.subheader("Speed, Torque, Efficiency, and Step Response")
     st.info("You are in DC Motor mode. Use the controls below to run DC motor calculations and transient analysis.")
 
+
     preset = st.selectbox(
         "DC Motor Preset",
         ["Custom", "Lab Motor 12V", "High Torque 24V"],
@@ -216,11 +232,29 @@ def render_dc_module() -> None:
         dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=base["L"], step=0.01)
         dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=base["J"], step=0.001, format="%.4f")
         dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=base["b"], step=0.0001, format="%.4f")
+    col_in_1, col_in_2, col_in_3 = st.columns(3)
+
+    with col_in_1:
+        dc_voltage = st.number_input("DC Voltage (V)", min_value=0.0, value=12.0, step=0.5)
+        dc_current = st.number_input("DC Current (A)", min_value=0.0, value=3.0, step=0.1)
+        dc_resistance = st.number_input("Armature Resistance (Ω)", min_value=0.0, value=2.0, step=0.1)
+
+    with col_in_2:
+        dc_flux = st.number_input("Field Flux (Wb)", min_value=0.001, value=0.05, step=0.001)
+        dc_k = st.number_input("Motor Constant K", min_value=0.001, value=0.1, step=0.01)
+        dc_kt = st.number_input("Torque Constant Kt (N·m/A)", min_value=0.001, value=0.1, step=0.01)
+
+    with col_in_3:
+        dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=0.5, step=0.01)
+        dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=0.01, step=0.001, format="%.4f")
+        dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=0.001, step=0.0001, format="%.4f")
+ main
 
     try:
         dc_speed = dc_calculate_speed(dc_voltage, dc_current, dc_resistance, dc_flux, dc_k)
         dc_torque = dc_calculate_torque(dc_current, dc_kt)
         dc_eff = dc_calculate_efficiency(dc_voltage, dc_current, dc_torque, dc_speed)
+
 
         stall_current = calculate_stall_current(dc_voltage, dc_resistance)
         stall_torque = calculate_stall_torque(dc_voltage, dc_resistance, dc_kt)
@@ -231,6 +265,11 @@ def render_dc_module() -> None:
         r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
         r4.metric("Stall Current (A)", "∞" if not np.isfinite(stall_current) else f"{stall_current:.2f}")
         r5.metric("Stall Torque (N·m)", "∞" if not np.isfinite(stall_torque) else f"{stall_torque:.2f}")
+        r1, r2, r3 = st.columns(3)
+        r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
+        r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
+        r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
+main
 
         t_dc, rpm_dc = simulate_step_response(
             resistance=dc_resistance,
@@ -249,6 +288,7 @@ def render_dc_module() -> None:
         ax_dc.set_ylabel("Speed (RPM)")
         ax_dc.grid(True, alpha=0.3)
         st.pyplot(fig_dc)
+ 
 
         col_plot_1, col_plot_2 = st.columns(2)
 
@@ -308,6 +348,7 @@ def render_dc_module() -> None:
             file_name="dc_motor_summary.csv",
             mime="text/csv",
         )
+ main
     except ValueError as exc:
         st.error(f"Invalid DC motor inputs: {exc}")
 
@@ -738,3 +779,6 @@ with tab5:
     )
 
     st.info("You can export the current motor simulation result table as a CSV file.")
+
+
+ main
