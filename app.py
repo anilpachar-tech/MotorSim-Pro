@@ -5,6 +5,12 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
+from dc_motor import (
+    calculate_efficiency as dc_calculate_efficiency,
+    calculate_speed as dc_calculate_speed,
+    calculate_torque as dc_calculate_torque,
+    simulate_step_response,
+)
 
 # PAGE CONFIG
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
@@ -278,12 +284,13 @@ recommendations = recommendation_engine(result)
 
 
 # TAB
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "📊 Dashboard",
     "📈 Performance Graphs",
     "⚡ 3-Phase Waveforms",
     "🆚 Comparison",
-    "📤 Export"
+    "📤 Export",
+    "🔋 DC Motor Module"
 ])
 
 
@@ -600,3 +607,57 @@ with tab5:
     )
 
     st.info("You can export the current motor simulation result table as a CSV file.")
+
+
+# TAB 6 - DC MOTOR MODULE
+
+with tab6:
+    st.markdown("## 🔋 DC Motor Calculator & Step Response")
+    st.caption("Quick DC motor calculations: speed, torque, efficiency, and transient speed response.")
+
+    col_in_1, col_in_2, col_in_3 = st.columns(3)
+
+    with col_in_1:
+        dc_voltage = st.number_input("DC Voltage (V)", min_value=0.0, value=12.0, step=0.5)
+        dc_current = st.number_input("DC Current (A)", min_value=0.0, value=3.0, step=0.1)
+        dc_resistance = st.number_input("Armature Resistance (Ω)", min_value=0.0, value=2.0, step=0.1)
+
+    with col_in_2:
+        dc_flux = st.number_input("Field Flux (Wb)", min_value=0.001, value=0.05, step=0.001)
+        dc_k = st.number_input("Motor Constant K", min_value=0.001, value=0.1, step=0.01)
+        dc_kt = st.number_input("Torque Constant Kt (N·m/A)", min_value=0.001, value=0.1, step=0.01)
+
+    with col_in_3:
+        dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=0.5, step=0.01)
+        dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=0.01, step=0.001, format="%.4f")
+        dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=0.001, step=0.0001, format="%.4f")
+
+    try:
+        dc_speed = dc_calculate_speed(dc_voltage, dc_current, dc_resistance, dc_flux, dc_k)
+        dc_torque = dc_calculate_torque(dc_current, dc_kt)
+        dc_eff = dc_calculate_efficiency(dc_voltage, dc_current, dc_torque, dc_speed)
+
+        r1, r2, r3 = st.columns(3)
+        r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
+        r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
+        r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
+
+        t_dc, rpm_dc = simulate_step_response(
+            resistance=dc_resistance,
+            inductance=dc_L,
+            back_emf_const=dc_k,
+            inertia=dc_J,
+            damping=dc_b,
+            voltage_step=dc_voltage,
+            t_end=2.0,
+        )
+
+        fig_dc, ax_dc = plt.subplots(figsize=(8, 4))
+        ax_dc.plot(t_dc, rpm_dc, linewidth=2)
+        ax_dc.set_title("DC Motor Step Response (Speed vs Time)")
+        ax_dc.set_xlabel("Time (s)")
+        ax_dc.set_ylabel("Speed (RPM)")
+        ax_dc.grid(True)
+        st.pyplot(fig_dc)
+    except ValueError as exc:
+        st.error(f"Invalid DC motor inputs: {exc}")

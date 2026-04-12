@@ -7,6 +7,7 @@ MotorSim Pro is an interactive simulation and visualization app for exploring ho
 
 ## Features
 - Induction and synchronous motor simulation
+- DC motor calculator module (speed, torque, efficiency, step response)
 - Interactive controls (voltage, frequency, poles, load torque, slip/excitation, rheostat)
 - Fault scenarios (voltage drop, overload, over-frequency, high rheostat)
 - Real-time KPIs (speed, torque, current, power factor, efficiency)
@@ -18,7 +19,10 @@ MotorSim Pro is an interactive simulation and visualization app for exploring ho
 ```text
 MotorSim-Pro/
 ├── app.py
+├── dc_motor.py
 ├── motor_model.py
+├── tests/
+│   └── test_dc_motor.py
 ├── requirements.txt
 ├── README.md
 └── docs/
