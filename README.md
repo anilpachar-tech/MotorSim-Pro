@@ -1,57 +1,102 @@
-# ⚙️ MotorSim Pro
 
-Advanced Streamlit-based motor simulation dashboard for induction and synchronous AC motors.
+# MotorSim-Pro
+MotorSim Pro is an advanced Python-Streamlit industrial motor simulation dashboard for analyzing synchronous and induction motor performance under varying voltage, frequency, torque, slip, excitation, and rheostat conditions. It includes fault simulation, waveform analysis, comparison mode, gauges, and interactive visualizations. 
 
-## Overview
-MotorSim Pro is an interactive simulation and visualization app for exploring how operating conditions affect motor performance. It is designed for lab demonstrations, student learning, and quick scenario analysis.
+=======
+# ⚙️ MotorSim Pro  
+### Advanced Simulation and Performance Analysis of Synchronous and Induction Motors
 
-## Features
-- Induction and synchronous motor simulation
-- DC motor studio (speed, torque, efficiency, stall metrics, torque-speed curve, voltage sweep, energy/cost, CSV export)
-codex/add-new-features-to-motorsim-pro-k3wq3e
-- DC motor studio (speed, torque, efficiency, stall metrics, torque-speed curve, voltage sweep, energy/cost, CSV export)
-  codex/add-new-features-to-motorsim-pro-0tc7fg
-- DC motor studio (speed, torque, efficiency, stall metrics, torque-speed curve, voltage sweep, energy/cost, CSV export)
+---
 
-- DC motor calculator module (speed, torque, efficiency, step response)
- main
- main
-- Interactive controls (voltage, frequency, poles, load torque, slip/excitation, rheostat)
-- Fault scenarios (voltage drop, overload, over-frequency, high rheostat)
-- Real-time KPIs (speed, torque, current, power factor, efficiency)
-- Gauge cards and rotor animation
-- Performance plots and waveform visualization
-- Comparison mode and CSV export
+## 📌 Overview
+MotorSim Pro is a Python-based industrial motor simulation dashboard designed to analyze the performance of Induction Motors and Synchronous Motors under varying operating conditions. Built using Streamlit, it enables real-time parameter variation and visualization, acting as a digital twin for motor behavior analysis.
 
-## Project Structure
-```text
-MotorSim-Pro/
+---
+
+## 🚀 Key Features
+- Dual Motor Simulation (Induction & Synchronous)
+- Interactive Controls (Voltage, Frequency, Torque, Slip, Excitation, Rheostat)
+- Fault Simulation (Voltage Drop, Overload, Over Frequency, High Rheostat)
+- Real-Time Outputs (RPM, Torque, Current, Power Factor, Efficiency)
+- Performance Graphs (Torque-Speed, Speed-Frequency, Current-Voltage, etc.)
+- 3-Phase Waveform Visualization
+- Motor Health Monitoring (Normal / Warning / Critical)
+- Smart Recommendation Engine
+- Rotor Animation and Gauge Dashboard
+- Comparison Mode (Induction vs Synchronous)
+- Export Results as CSV
+
+---
+
+## 🏗️ Tech Stack
+- Python  
+- Streamlit  
+- NumPy  
+- Pandas  
+- Matplotlib  
+- Plotly  
+
+---
+
+## 📂 Project Structure
+MotorSim_Pro/
+│
 ├── app.py
-├── dc_motor.py
 ├── motor_model.py
-├── tests/
-│   └── test_dc_motor.py
 ├── requirements.txt
-├── README.md
-└── docs/
-    └── executive_summary.md
-```
+└── README.md
 
-## Quick Start
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. Run the app:
-   ```bash
-   streamlit run app.py
-   ```
-3. In the sidebar, choose **Simulation Domain**:
-   - **AC Motors** for induction/synchronous dashboard
-   - **DC Motor** for DC calculator and step-response view
+---
 
-## Documentation
-- Executive summary and proposed roadmap: [`docs/executive_summary.md`](docs/executive_summary.md)
+## ⚙️ Installation & Setup
+1. Clone the repository:
+   git clone https://github.com/anilpachar-tech/MotorSim-Pro.git  
+   cd MotorSim-Pro  
 
-## Notes
-This project uses simplified analytical models and is intended for educational and analytical use.
+2. Install dependencies:
+   pip install -r requirements.txt  
+
+3. Run the application:
+
+   streamlit run app.py 
+=======
+   streamlit run app.py  
+ 
+
+---
+
+## 📊 Use Cases
+- Electrical Engineering Labs  
+- Motor Performance Analysis  
+- Industrial Testing & Automation  
+- Academic Projects & Research  
+- Teaching & Demonstration  
+
+---
+
+## ⚠️ Note
+This project uses simplified analytical models for simulation. It is intended for educational and analytical purposes, not for exact industrial machine design.
+
+---
+
+## 🔮 Future Enhancements
+- IoT-based real-time data integration  
+- Advanced equivalent circuit modeling  
+- AI-based predictive maintenance  
+- PDF report generation  
+- SCADA-style dashboard  
+
+---
+
+## 👨‍💻 Author
+
+Anil Pachar , Devesh godara & Shivam Kumar
+Electrical Engineering Student  
+Aspiring AIML & Data Science Engineer  
+
+---
+
+## ⭐ Support
+If you found this project useful, consider giving it a star ⭐ on GitHub.
+
+---
