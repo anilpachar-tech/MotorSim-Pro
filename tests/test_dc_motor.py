@@ -5,6 +5,10 @@ from dc_motor import (
     calculate_speed,
     calculate_stall_current,
     calculate_stall_torque,
+ codex/add-new-features-to-motorsim-pro-0tc7fg
+    calculate_stall_current,
+    calculate_stall_torque,
+main
     calculate_torque,
     simulate_step_response,
 )
@@ -22,6 +26,7 @@ class TestDCMotor(unittest.TestCase):
     def test_calculate_efficiency_bounds(self):
         eff = calculate_efficiency(12, 4, 0.1, 1000)
         self.assertGreaterEqual(eff, 0.0)
+codex/add-new-features-to-motorsim-pro-0tc7fg
         self.assertLessEqual(eff, 100.0)
 
     def test_efficiency_is_clamped(self):
@@ -31,6 +36,8 @@ class TestDCMotor(unittest.TestCase):
     def test_stall_metrics(self):
         self.assertAlmostEqual(calculate_stall_current(12, 2), 6.0, places=6)
         self.assertAlmostEqual(calculate_stall_torque(12, 2, 0.2), 1.2, places=6)
+        self.assertLess(eff, 100.0)
+ main
 
     def test_invalid_inputs_raise(self):
         with self.assertRaises(ValueError):
