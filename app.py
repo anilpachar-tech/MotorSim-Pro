@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
+from dc_motor import calculate_efficiency as dc_calculate_efficiency, calculate_speed as dc_calculate_speed, calculate_stall_current, calculate_stall_torque, calculate_torque as dc_calculate_torque, simulate_step_response
 from dc_motor import (
     calculate_efficiency as dc_calculate_efficiency,
     calculate_speed as dc_calculate_speed,
@@ -12,7 +13,7 @@ from dc_motor import (
     calculate_stall_current,
     calculate_stall_torque,
 
- codex/add-new-features-to-motorsim-pro-0tc7fg
+ 
     calculate_stall_current,
     calculate_stall_torque,
  main
@@ -201,7 +202,7 @@ def render_dc_module() -> None:
     st.subheader("Speed, Torque, Efficiency, and Step Response")
     st.info("You are in DC Motor mode. Use the controls below to run DC motor calculations and transient analysis.")
 
-codex/add-new-features-to-motorsim-pro-0tc7fg
+
     preset = st.selectbox(
         "DC Motor Preset",
         ["Custom", "Lab Motor 12V", "High Torque 24V"],
@@ -254,7 +255,7 @@ codex/add-new-features-to-motorsim-pro-0tc7fg
         dc_torque = dc_calculate_torque(dc_current, dc_kt)
         dc_eff = dc_calculate_efficiency(dc_voltage, dc_current, dc_torque, dc_speed)
 
-codex/add-new-features-to-motorsim-pro-0tc7fg
+
         stall_current = calculate_stall_current(dc_voltage, dc_resistance)
         stall_torque = calculate_stall_torque(dc_voltage, dc_resistance, dc_kt)
 
@@ -287,7 +288,7 @@ main
         ax_dc.set_ylabel("Speed (RPM)")
         ax_dc.grid(True, alpha=0.3)
         st.pyplot(fig_dc)
- codex/add-new-features-to-motorsim-pro-0tc7fg
+ 
 
         col_plot_1, col_plot_2 = st.columns(2)
 
@@ -778,6 +779,6 @@ with tab5:
     )
 
     st.info("You can export the current motor simulation result table as a CSV file.")
-codex/add-new-features-to-motorsim-pro-0tc7fg
+
 
  main

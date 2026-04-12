@@ -7,6 +7,7 @@ MotorSim Pro is an interactive simulation and visualization app for exploring ho
 
 ## Features
 - Induction and synchronous motor simulation
+- DC motor studio (speed, torque, efficiency, stall metrics, torque-speed curve, voltage sweep, energy/cost, CSV export)
 codex/add-new-features-to-motorsim-pro-k3wq3e
 - DC motor studio (speed, torque, efficiency, stall metrics, torque-speed curve, voltage sweep, energy/cost, CSV export)
   codex/add-new-features-to-motorsim-pro-0tc7fg

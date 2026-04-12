@@ -33,7 +33,7 @@ def calculate_efficiency(voltage: float, current: float, torque: float, speed_rp
 
     omega = speed_rpm * (2 * np.pi / 60)
     pout = torque * omega
-codex/add-new-features-to-motorsim-pro-0tc7fg
+
     efficiency = float((pout / pin) * 100)
     return max(0.0, min(efficiency, 100.0))
 
