@@ -9,7 +9,7 @@ from dc_motor import calculate_efficiency as dc_calculate_efficiency, calculate_
 from dc_motor import (
     calculate_efficiency as dc_calculate_efficiency,
     calculate_speed as dc_calculate_speed,
- codex/add-new-features-to-motorsim-pro-k3wq3e
+
     calculate_stall_current,
     calculate_stall_torque,
 
