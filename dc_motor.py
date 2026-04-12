@@ -33,7 +33,29 @@ def calculate_efficiency(voltage: float, current: float, torque: float, speed_rp
 
     omega = speed_rpm * (2 * np.pi / 60)
     pout = torque * omega
+codex/add-new-features-to-motorsim-pro-0tc7fg
+    efficiency = float((pout / pin) * 100)
+    return max(0.0, min(efficiency, 100.0))
+
+
+def calculate_stall_current(voltage: float, resistance: float) -> float:
+    """Return stall current in ampere."""
+    if voltage < 0 or resistance < 0:
+        raise ValueError("Invalid inputs for stall current calculation.")
+    if resistance == 0:
+        return float("inf")
+    return float(voltage / resistance)
+
+
+def calculate_stall_torque(voltage: float, resistance: float, torque_const: float) -> float:
+    """Return stall torque in N·m."""
+    if torque_const <= 0:
+        raise ValueError("Invalid torque constant for stall torque calculation.")
+    current = calculate_stall_current(voltage, resistance)
+    return float(current * torque_const) if np.isfinite(current) else float("inf")
+=======
     return float((pout / pin) * 100)
+ main
 
 
 def simulate_step_response(
