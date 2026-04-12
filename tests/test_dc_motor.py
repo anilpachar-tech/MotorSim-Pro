@@ -3,10 +3,11 @@ import unittest
 from dc_motor import (
     calculate_efficiency,
     calculate_speed,
+    calculate_stall_current,
+    calculate_stall_torque,
  codex/add-new-features-to-motorsim-pro-0tc7fg
     calculate_stall_current,
     calculate_stall_torque,
-=======
 main
     calculate_torque,
     simulate_step_response,
@@ -35,7 +36,6 @@ codex/add-new-features-to-motorsim-pro-0tc7fg
     def test_stall_metrics(self):
         self.assertAlmostEqual(calculate_stall_current(12, 2), 6.0, places=6)
         self.assertAlmostEqual(calculate_stall_torque(12, 2, 0.2), 1.2, places=6)
-=======
         self.assertLess(eff, 100.0)
  main
 

@@ -8,9 +8,14 @@ from motor_model import induction_motor_simulation, synchronous_motor_simulation
 from dc_motor import (
     calculate_efficiency as dc_calculate_efficiency,
     calculate_speed as dc_calculate_speed,
+ codex/add-new-features-to-motorsim-pro-k3wq3e
+    calculate_stall_current,
+    calculate_stall_torque,
+
  codex/add-new-features-to-motorsim-pro-0tc7fg
     calculate_stall_current,
     calculate_stall_torque,
+ main
  main
     calculate_torque as dc_calculate_torque,
     simulate_step_response,
@@ -226,7 +231,6 @@ codex/add-new-features-to-motorsim-pro-0tc7fg
         dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=base["L"], step=0.01)
         dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=base["J"], step=0.001, format="%.4f")
         dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=base["b"], step=0.0001, format="%.4f")
-=======
     col_in_1, col_in_2, col_in_3 = st.columns(3)
 
     with col_in_1:
@@ -260,7 +264,6 @@ codex/add-new-features-to-motorsim-pro-0tc7fg
         r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
         r4.metric("Stall Current (A)", "∞" if not np.isfinite(stall_current) else f"{stall_current:.2f}")
         r5.metric("Stall Torque (N·m)", "∞" if not np.isfinite(stall_torque) else f"{stall_torque:.2f}")
-=======
         r1, r2, r3 = st.columns(3)
         r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
         r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
@@ -344,7 +347,6 @@ main
             file_name="dc_motor_summary.csv",
             mime="text/csv",
         )
-=======
  main
     except ValueError as exc:
         st.error(f"Invalid DC motor inputs: {exc}")
@@ -777,6 +779,5 @@ with tab5:
 
     st.info("You can export the current motor simulation result table as a CSV file.")
 codex/add-new-features-to-motorsim-pro-0tc7fg
-=======
 
  main

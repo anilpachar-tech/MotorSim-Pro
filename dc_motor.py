@@ -53,7 +53,6 @@ def calculate_stall_torque(voltage: float, resistance: float, torque_const: floa
         raise ValueError("Invalid torque constant for stall torque calculation.")
     current = calculate_stall_current(voltage, resistance)
     return float(current * torque_const) if np.isfinite(current) else float("inf")
-=======
     return float((pout / pin) * 100)
  main
 
