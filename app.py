@@ -4,20 +4,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
+# External modules (make sure these files exist)
 from motor_model import induction_motor_simulation, synchronous_motor_simulation
-from dc_motor import calculate_efficiency as dc_calculate_efficiency, calculate_speed as dc_calculate_speed, calculate_stall_current, calculate_stall_torque, calculate_torque as dc_calculate_torque, simulate_step_response
 from dc_motor import (
     calculate_efficiency as dc_calculate_efficiency,
     calculate_speed as dc_calculate_speed,
-
     calculate_stall_current,
     calculate_stall_torque,
-
- 
-    calculate_stall_current,
-    calculate_stall_torque,
- main
- main
     calculate_torque as dc_calculate_torque,
     simulate_step_response,
 )
@@ -25,760 +18,112 @@ from dc_motor import (
 # PAGE CONFIG
 st.set_page_config(page_title="MotorSim Pro", layout="wide")
 
-# CUSTOM STYLING
-st.markdown("""
-<style>
-/* Main app background */
-.stApp {
-    background: linear-gradient(135deg, #0b1220 0%, #111827 45%, #0f172a 100%);
-    color: #f3f4f6;
-}
-
-/* Sidebar */
-[data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
-    border-right: 1px solid rgba(255,255,255,0.08);
-}
-
-/* Main text */
-html, body, [class*="css"] {
-    color: #f3f4f6;
-    font-family: "Segoe UI", sans-serif;
-}
-
-/* Cards */
-.metric-card {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 18px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
-    text-align: center;
-    margin-bottom: 12px;
-}
-
-.metric-title {
-    font-size: 14px;
-    color: #cbd5e1;
-    margin-bottom: 6px;
-}
-
-.metric-value {
-    font-size: 32px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-/* Section headers */
-.section-box {
-    background: rgba(255, 255, 255, 0.04);
-    padding: 16px 20px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 18px;
-}
-
-/* Recommendation panel */
-.recommend-box {
-    background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(59,130,246,0.12));
-    padding: 18px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 10px;
-}
-
-/* Fault box */
-.fault-box {
-    background: linear-gradient(135deg, rgba(239,68,68,0.14), rgba(245,158,11,0.12));
-    padding: 18px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    margin-top: 10px;
-}
-
-/* Brand box */
-.brand-box {
-    background: linear-gradient(135deg, rgba(99,102,241,0.14), rgba(14,165,233,0.12));
-    padding: 18px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.08);
-    margin-bottom: 18px;
-}
-
-/* Tabs */
-button[data-baseweb="tab"] {
-    font-size: 15px;
-    font-weight: 600;
-    color: #e5e7eb;
-}
-
-/* Hide Streamlit footer/menu */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
-
-/* Rotor Animation */
-.rotor-wrap {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.rotor {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    border: 10px solid rgba(255,255,255,0.12);
-    border-top: 10px solid #38bdf8;
-    border-right: 10px solid #22c55e;
-    border-bottom: 10px solid #f59e0b;
-    position: relative;
-    animation: spin 2s linear infinite;
-    box-shadow: 0 0 30px rgba(56,189,248,0.15);
-}
-
-.rotor::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70px;
-    height: 70px;
-    background: rgba(255,255,255,0.08);
-    border: 2px solid rgba(255,255,255,0.12);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.rotor::after {
-    content: "";
-    position: absolute;
-    top: 8px;
-    left: 50%;
-    width: 8px;
-    height: 40px;
-    background: #ffffff;
-    border-radius: 8px;
-    transform: translateX(-50%);
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-</style>
-""", unsafe_allow_html=True)
-
 # TITLE
 st.title("⚙️ MotorSim Pro")
-st.subheader("Advanced Simulation and Performance Analysis of Synchronous and Induction Motors")
+st.subheader("Motor Simulation Dashboard (Clean Version)")
 
-st.markdown("""
-<div class="brand-box">
-<h3 style="margin-top:0;">🏭 Industrial Digital Twin Dashboard</h3>
-<p style="margin-bottom:0;">
-Designed as a <b>third-party industrial motor analysis platform</b> for electrical labs, automation companies, and equipment testing environments.
-</p>
-</div>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-<div class="section-box">
-<b>Industrial Use Case:</b> This software is designed for <b>electrical industries, testing labs, motor manufacturers, and industrial automation firms</b>
-to simulate, compare, and analyze the behavior of <b>Induction Motors</b> and <b>Synchronous Motors</b> under varying operating conditions.
-</div>
-""", unsafe_allow_html=True)
-
-# SIDEBAR INPUTS
+# SIDEBAR
 st.sidebar.header("🔧 Input Parameters")
+analysis_domain = st.sidebar.radio("Simulation Domain", ["AC Motors", "DC Motor"])
 
-analysis_domain = st.sidebar.radio("Simulation Domain", ["AC Motors", "DC Motor"], index=0)
+# ---------------- DC MOTOR MODULE ----------------
+def render_dc_module():
+    st.header("🔋 DC Motor Analysis")
 
+    col1, col2, col3 = st.columns(3)
 
-def render_dc_module() -> None:
-    st.title("🔋 MotorSim Pro — DC Motor Studio")
-    st.subheader("Speed, Torque, Efficiency, and Step Response")
-    st.info("You are in DC Motor mode. Use the controls below to run DC motor calculations and transient analysis.")
+    with col1:
+        V = st.number_input("Voltage (V)", value=12.0)
+        I = st.number_input("Current (A)", value=3.0)
+        R = st.number_input("Resistance (Ω)", value=2.0)
 
+    with col2:
+        flux = st.number_input("Flux (Wb)", value=0.05)
+        k = st.number_input("Motor Constant K", value=0.1)
+        kt = st.number_input("Torque Constant", value=0.1)
 
-    preset = st.selectbox(
-        "DC Motor Preset",
-        ["Custom", "Lab Motor 12V", "High Torque 24V"],
-        index=0,
-    )
-
-    preset_map = {
-        "Custom": dict(voltage=12.0, current=3.0, resistance=2.0, flux=0.05, k=0.1, kt=0.1, L=0.5, J=0.01, b=0.001),
-        "Lab Motor 12V": dict(voltage=12.0, current=2.5, resistance=1.8, flux=0.06, k=0.12, kt=0.11, L=0.4, J=0.009, b=0.0012),
-        "High Torque 24V": dict(voltage=24.0, current=6.0, resistance=1.2, flux=0.08, k=0.11, kt=0.18, L=0.35, J=0.015, b=0.0015),
-    }
-    base = preset_map[preset]
-
-    col_in_1, col_in_2, col_in_3 = st.columns(3)
-
-    with col_in_1:
-        dc_voltage = st.number_input("DC Voltage (V)", min_value=0.0, value=base["voltage"], step=0.5)
-        dc_current = st.number_input("DC Current (A)", min_value=0.0, value=base["current"], step=0.1)
-        dc_resistance = st.number_input("Armature Resistance (Ω)", min_value=0.0, value=base["resistance"], step=0.1)
-
-    with col_in_2:
-        dc_flux = st.number_input("Field Flux (Wb)", min_value=0.001, value=base["flux"], step=0.001)
-        dc_k = st.number_input("Motor Constant K", min_value=0.001, value=base["k"], step=0.01)
-        dc_kt = st.number_input("Torque Constant Kt (N·m/A)", min_value=0.001, value=base["kt"], step=0.01)
-
-    with col_in_3:
-        dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=base["L"], step=0.01)
-        dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=base["J"], step=0.001, format="%.4f")
-        dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=base["b"], step=0.0001, format="%.4f")
-    col_in_1, col_in_2, col_in_3 = st.columns(3)
-
-    with col_in_1:
-        dc_voltage = st.number_input("DC Voltage (V)", min_value=0.0, value=12.0, step=0.5)
-        dc_current = st.number_input("DC Current (A)", min_value=0.0, value=3.0, step=0.1)
-        dc_resistance = st.number_input("Armature Resistance (Ω)", min_value=0.0, value=2.0, step=0.1)
-
-    with col_in_2:
-        dc_flux = st.number_input("Field Flux (Wb)", min_value=0.001, value=0.05, step=0.001)
-        dc_k = st.number_input("Motor Constant K", min_value=0.001, value=0.1, step=0.01)
-        dc_kt = st.number_input("Torque Constant Kt (N·m/A)", min_value=0.001, value=0.1, step=0.01)
-
-    with col_in_3:
-        dc_L = st.number_input("Armature Inductance L (H)", min_value=0.001, value=0.5, step=0.01)
-        dc_J = st.number_input("Inertia J (kg·m²)", min_value=0.0001, value=0.01, step=0.001, format="%.4f")
-        dc_b = st.number_input("Damping b (N·m·s/rad)", min_value=0.0, value=0.001, step=0.0001, format="%.4f")
- main
+    with col3:
+        L = st.number_input("Inductance (H)", value=0.5)
+        J = st.number_input("Inertia", value=0.01)
+        b = st.number_input("Damping", value=0.001)
 
     try:
-        dc_speed = dc_calculate_speed(dc_voltage, dc_current, dc_resistance, dc_flux, dc_k)
-        dc_torque = dc_calculate_torque(dc_current, dc_kt)
-        dc_eff = dc_calculate_efficiency(dc_voltage, dc_current, dc_torque, dc_speed)
+        speed = dc_calculate_speed(V, I, R, flux, k)
+        torque = dc_calculate_torque(I, kt)
+        efficiency = dc_calculate_efficiency(V, I, torque, speed)
 
+        st.subheader("📊 Results")
+        c1, c2, c3 = st.columns(3)
+        c1.metric("Speed (RPM)", f"{speed:.2f}")
+        c2.metric("Torque (Nm)", f"{torque:.2f}")
+        c3.metric("Efficiency (%)", f"{efficiency:.2f}")
 
-        stall_current = calculate_stall_current(dc_voltage, dc_resistance)
-        stall_torque = calculate_stall_torque(dc_voltage, dc_resistance, dc_kt)
+        # Step response
+        t, rpm = simulate_step_response(R, L, k, J, b, V, 2.0)
+        fig, ax = plt.subplots()
+        ax.plot(t, rpm)
+        ax.set_title("Step Response")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Speed")
+        st.pyplot(fig)
 
-        r1, r2, r3, r4, r5 = st.columns(5)
-        r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
-        r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
-        r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
-        r4.metric("Stall Current (A)", "∞" if not np.isfinite(stall_current) else f"{stall_current:.2f}")
-        r5.metric("Stall Torque (N·m)", "∞" if not np.isfinite(stall_torque) else f"{stall_torque:.2f}")
-        r1, r2, r3 = st.columns(3)
-        r1.metric("Speed (RPM)", f"{dc_speed:.2f}")
-        r2.metric("Torque (N·m)", f"{dc_torque:.3f}")
-        r3.metric("Efficiency (%)", f"{dc_eff:.2f}")
-main
-
-        t_dc, rpm_dc = simulate_step_response(
-            resistance=dc_resistance,
-            inductance=dc_L,
-            back_emf_const=dc_k,
-            inertia=dc_J,
-            damping=dc_b,
-            voltage_step=dc_voltage,
-            t_end=2.0,
-        )
-
-        fig_dc, ax_dc = plt.subplots(figsize=(9, 4))
-        ax_dc.plot(t_dc, rpm_dc, linewidth=2, color="#38bdf8")
-        ax_dc.set_title("DC Motor Step Response (Speed vs Time)")
-        ax_dc.set_xlabel("Time (s)")
-        ax_dc.set_ylabel("Speed (RPM)")
-        ax_dc.grid(True, alpha=0.3)
-        st.pyplot(fig_dc)
- 
-
-        col_plot_1, col_plot_2 = st.columns(2)
-
-        with col_plot_1:
-            st.markdown("#### Torque–Speed Curve")
-            n_no_load = max(dc_calculate_speed(dc_voltage, 0.0, dc_resistance, dc_flux, dc_k), 1e-6)
-            speed_axis = np.linspace(0, n_no_load, 100)
-            torque_axis = stall_torque * (1 - speed_axis / n_no_load) if np.isfinite(stall_torque) else np.zeros_like(speed_axis)
-            fig_ts, ax_ts = plt.subplots(figsize=(6, 4))
-            ax_ts.plot(speed_axis, torque_axis, label="Theoretical Torque-Speed")
-            ax_ts.scatter([dc_speed], [dc_torque], color="red", label="Operating Point")
-            ax_ts.set_xlabel("Speed (RPM)")
-            ax_ts.set_ylabel("Torque (N·m)")
-            ax_ts.grid(True, alpha=0.3)
-            ax_ts.legend()
-            st.pyplot(fig_ts)
-
-        with col_plot_2:
-            st.markdown("#### Voltage Sweep (Speed Sensitivity)")
-            volt_axis = np.linspace(max(1.0, dc_voltage * 0.5), dc_voltage * 1.5 if dc_voltage > 0 else 24.0, 30)
-            speed_sweep = [dc_calculate_speed(v, dc_current, dc_resistance, dc_flux, dc_k) for v in volt_axis]
-            fig_vs, ax_vs = plt.subplots(figsize=(6, 4))
-            ax_vs.plot(volt_axis, speed_sweep)
-            ax_vs.set_xlabel("Voltage (V)")
-            ax_vs.set_ylabel("Speed (RPM)")
-            ax_vs.grid(True, alpha=0.3)
-            st.pyplot(fig_vs)
-
-        st.markdown("#### Energy & Cost Estimator")
-        ec1, ec2 = st.columns(2)
-        with ec1:
-            run_hours = st.number_input("Runtime (hours)", min_value=0.0, value=2.0, step=0.5)
-        with ec2:
-            rate = st.number_input("Electricity Rate ($/kWh)", min_value=0.0, value=0.15, step=0.01)
-        energy_kwh = (dc_voltage * dc_current * run_hours) / 1000.0
-        estimated_cost = energy_kwh * rate
-        st.write(f"Estimated Energy: **{energy_kwh:.3f} kWh** | Estimated Cost: **${estimated_cost:.3f}**")
-
-        dc_summary = pd.DataFrame(
-            {
-                "Metric": ["Speed (RPM)", "Torque (N·m)", "Efficiency (%)", "Stall Current (A)", "Stall Torque (N·m)", "Energy (kWh)", "Cost ($)"],
-                "Value": [
-                    round(dc_speed, 3),
-                    round(dc_torque, 3),
-                    round(dc_eff, 3),
-                    "inf" if not np.isfinite(stall_current) else round(stall_current, 3),
-                    "inf" if not np.isfinite(stall_torque) else round(stall_torque, 3),
-                    round(energy_kwh, 4),
-                    round(estimated_cost, 4),
-                ],
-            }
-        )
-        st.dataframe(dc_summary, use_container_width=True)
-        st.download_button(
-            "📥 Download DC Summary CSV",
-            data=dc_summary.to_csv(index=False).encode("utf-8"),
-            file_name="dc_motor_summary.csv",
-            mime="text/csv",
-        )
- main
-    except ValueError as exc:
-        st.error(f"Invalid DC motor inputs: {exc}")
+    except Exception as e:
+        st.error(f"Error: {e}")
 
 
 if analysis_domain == "DC Motor":
     render_dc_module()
     st.stop()
 
-mode = st.sidebar.radio("Select Mode", ["Single Motor Analysis", "Comparison Mode"])
+# ---------------- AC MOTOR MODULE ----------------
+motor_type = st.sidebar.selectbox("Motor Type", ["Induction Motor", "Synchronous Motor"])
 
-motor_type = st.sidebar.selectbox(
-    "Select Motor Type",
-    ["Induction Motor", "Synchronous Motor"]
-)
-
-voltage = st.sidebar.slider("Applied Voltage (V)", 100, 500, 415)
-frequency = st.sidebar.slider("Supply Frequency (Hz)", 25, 100, 50)
-poles = st.sidebar.selectbox("Number of Poles", [2, 4, 6, 8], index=1)
-load_torque = st.sidebar.slider("Load Torque (Nm)", 1, 100, 20)
-rheostat_resistance = st.sidebar.slider("Rheostat Resistance (Ohm)", 0.0, 5.0, 0.5)
+voltage = st.sidebar.slider("Voltage", 100, 500, 415)
+frequency = st.sidebar.slider("Frequency", 25, 100, 50)
+poles = st.sidebar.selectbox("Poles", [2, 4, 6, 8])
+load = st.sidebar.slider("Load Torque", 1, 100, 20)
+rheostat = st.sidebar.slider("Rheostat", 0.0, 5.0, 0.5)
 
 if motor_type == "Induction Motor":
-    slip = st.sidebar.slider("Slip", 0.01, 0.20, 0.04, step=0.01)
+    slip = st.sidebar.slider("Slip", 0.01, 0.2, 0.04)
+    result = induction_motor_simulation(voltage, frequency, poles, slip, load, rheostat)
 else:
-    excitation_factor = st.sidebar.slider("Excitation Factor", 0.8, 1.2, 1.0, step=0.05)
+    excitation = st.sidebar.slider("Excitation", 0.8, 1.2, 1.0)
+    result = synchronous_motor_simulation(voltage, frequency, poles, load, excitation, rheostat)
 
-# Fault Simulation
-st.sidebar.markdown("### ⚠ Fault Simulation")
-fault_mode = st.sidebar.selectbox(
-    "Fault Scenario",
-    ["Normal", "Voltage Drop", "Overload", "Over Frequency", "High Rheostat"]
-)
+# ---------------- OUTPUT ----------------
+st.subheader("📊 Motor Results")
 
-# Apply fault conditions
-fault_voltage = voltage
-fault_load = load_torque
-fault_frequency = frequency
-fault_rheostat = rheostat_resistance
+c1, c2, c3, c4 = st.columns(4)
+c1.metric("Speed", result["Speed (RPM)"])
+c2.metric("Current", result["Current (A)"])
+c3.metric("Torque", result["Torque (Nm)"])
+c4.metric("Efficiency", result["Efficiency (%)"])
 
-if fault_mode == "Voltage Drop":
-    fault_voltage = max(100, voltage - 120)
-elif fault_mode == "Overload":
-    fault_load = min(100, load_torque + 30)
-elif fault_mode == "Over Frequency":
-    fault_frequency = min(100, frequency + 20)
-elif fault_mode == "High Rheostat":
-    fault_rheostat = min(5.0, rheostat_resistance + 2.5)
+# Table
+df = pd.DataFrame(result.items(), columns=["Parameter", "Value"])
+st.dataframe(df)
 
+# ---------------- GRAPH ----------------
+st.subheader("📈 Torque vs Speed")
 
-# MOTOR RESULTS
+speeds = np.linspace(500, 3000, 50)
+torques = []
 
-if motor_type == "Induction Motor":
-    result = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, fault_load, fault_rheostat)
-else:
-    result = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, excitation_factor, fault_rheostat)
-
-
-# HELPERS
-
-def recommendation_engine(result):
-    recs = []
-
-    if result["Efficiency (%)"] < 60:
-        recs.append("Increase efficiency by reducing load fluctuations or improving supply conditions.")
-    if result["Current (A)"] > 25:
-        recs.append("Current is relatively high — consider reducing torque demand or rheostat resistance.")
-    if result["Power Factor"] < 0.75:
-        recs.append("Power factor is low — compensation or improved excitation may help.")
-    if result["Torque (Nm)"] < 5:
-        recs.append("Developed torque is low — check rheostat setting or increase applied voltage.")
-    if result["Health Status"] == "Critical":
-        recs.append("Motor health is critical — immediate operating condition correction is recommended.")
-    elif result["Health Status"] == "Warning":
-        recs.append("Motor health is in warning zone — monitor parameters carefully.")
-
-    if not recs:
-        recs.append("Motor is operating within acceptable simulated conditions.")
-
-    return recs
-
-def gauge_chart(title, value, min_val, max_val, suffix=""):
-    fig = go.Figure(go.Indicator(
-        mode="gauge+number",
-        value=value,
-        number={"suffix": suffix},
-        title={"text": title},
-        gauge={
-            "axis": {"range": [min_val, max_val]},
-            "bar": {"thickness": 0.25},
-            "steps": [
-                {"range": [min_val, min_val + (max_val-min_val)*0.5], "color": "rgba(34,197,94,0.25)"},
-                {"range": [min_val + (max_val-min_val)*0.5, min_val + (max_val-min_val)*0.8], "color": "rgba(245,158,11,0.25)"},
-                {"range": [min_val + (max_val-min_val)*0.8, max_val], "color": "rgba(239,68,68,0.25)"},
-            ],
-        }
-    ))
-    fig.update_layout(
-        paper_bgcolor="rgba(0,0,0,0)",
-        font={"color": "#f3f4f6", "family": "Segoe UI"},
-        margin=dict(l=10, r=10, t=50, b=10),
-        height=260
-    )
-    return fig
-
-recommendations = recommendation_engine(result)
-
-
-# TAB
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "📊 Dashboard",
-    "📈 Performance Graphs",
-    "⚡ 3-Phase Waveforms",
-    "🆚 Comparison",
-    "📤 Export"
-])
-
-
-# TAB 1 - DASHBOARD
-
-with tab1:
-    st.markdown(f"""
-    <div class="section-box">
-    <h3 style="margin-bottom:6px;">📊 Simulation Dashboard</h3>
-    <p style="margin:0;">Active Scenario: <b>{fault_mode}</b></p>
-    </div>
-    """, unsafe_allow_html=True)
-
-    # Top metrics
-    c1, c2, c3, c4, c5, c6 = st.columns(6)
-
-    with c1:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Motor Type</div>
-            <div class="metric-value" style="font-size:22px;">{result["Motor Type"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c2:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Speed</div>
-            <div class="metric-value">{result["Speed (RPM)"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c3:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Current</div>
-            <div class="metric-value">{result["Current (A)"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c4:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Torque</div>
-            <div class="metric-value">{result["Torque (Nm)"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c5:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Efficiency</div>
-            <div class="metric-value">{result["Efficiency (%)"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with c6:
-        st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-title">Power Factor</div>
-            <div class="metric-value">{result["Power Factor"]}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # Rotor animation + gauges
-    left, right = st.columns([1, 2])
-
-    with left:
-        st.markdown("### 🌀 Motor Rotor Animation")
-        st.markdown("""
-        <div class="rotor-wrap">
-            <div class="rotor"></div>
-        </div>
-        """, unsafe_allow_html=True)
-        st.caption("Animated rotor representation for visual simulation.")
-
-    with right:
-        g1, g2, g3 = st.columns(3)
-        with g1:
-            st.plotly_chart(gauge_chart("RPM", result["Speed (RPM)"], 0, 3000), use_container_width=True)
-        with g2:
-            st.plotly_chart(gauge_chart("Current", result["Current (A)"], 0, 50, " A"), use_container_width=True)
-        with g3:
-            st.plotly_chart(gauge_chart("Efficiency", result["Efficiency (%)"], 0, 100, " %"), use_container_width=True)
-
-    st.markdown("### 📋 Detailed Output Table")
-    df_result = pd.DataFrame(result.items(), columns=["Parameter", "Value"])
-    st.dataframe(df_result, use_container_width=True)
-
-    # Health + Fault + AI Recommendation
-    a1, a2 = st.columns(2)
-
-    with a1:
-        health = result["Health Status"]
-        if health == "Normal":
-            st.success(f"🟢 Health Status: {health}")
-        elif health == "Warning":
-            st.warning(f"🟠 Health Status: {health}")
-        else:
-            st.error(f"🔴 Health Status: {health}")
-
-        st.markdown(f"""
-        <div class="fault-box">
-        <h4 style="margin-top:0;">⚠ Fault Analysis</h4>
-        <p><b>Scenario:</b> {fault_mode}</p>
-        <p><b>Observed Impact:</b> Fault conditions may affect speed, torque, current, and efficiency.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with a2:
-        rec_html = "".join([f"<li>{r}</li>" for r in recommendations])
-        st.markdown(f"""
-        <div class="recommend-box">
-        <h4 style="margin-top:0;">🤖 Smart Recommendation Engine</h4>
-        <ul>{rec_html}</ul>
-        </div>
-        """, unsafe_allow_html=True)
-
-
-# TAB 2 - GRAPHS
-
-with tab2:
-    st.markdown("## 📈 Performance Graphs")
-
-    # Graph 1
-    fig1, ax1 = plt.subplots(figsize=(8, 5))
+for s in speeds:
     if motor_type == "Induction Motor":
-        slips = np.linspace(0.01, 0.20, 50)
-        speeds = []
-        torques = []
-        for s in slips:
-            r = induction_motor_simulation(fault_voltage, fault_frequency, poles, s, fault_load, fault_rheostat)
-            speeds.append(r["Speed (RPM)"])
-            torques.append(r["Torque (Nm)"])
-        ax1.plot(speeds, torques, linewidth=2)
-        ax1.set_title("Torque vs Speed (Induction Motor)")
-        ax1.set_xlabel("Speed (RPM)")
-        ax1.set_ylabel("Torque (Nm)")
+        r = induction_motor_simulation(voltage, frequency, poles, 0.04, load, rheostat)
     else:
-        torques = np.linspace(1, 100, 50)
-        currents = []
-        for t in torques:
-            r = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, t, excitation_factor, fault_rheostat)
-            currents.append(r["Current (A)"])
-        ax1.plot(torques, currents, linewidth=2)
-        ax1.set_title("Current vs Load Torque (Synchronous Motor)")
-        ax1.set_xlabel("Load Torque (Nm)")
-        ax1.set_ylabel("Current (A)")
-    ax1.grid(True)
-    st.pyplot(fig1)
+        r = synchronous_motor_simulation(voltage, frequency, poles, load, 1.0, rheostat)
+    torques.append(r["Torque (Nm)"])
 
-    # Graph 2
-    fig2, ax2 = plt.subplots(figsize=(8, 5))
-    frequencies = np.linspace(25, 100, 50)
-    speeds_freq = []
-    for f in frequencies:
-        if motor_type == "Induction Motor":
-            r = induction_motor_simulation(fault_voltage, f, poles, slip, fault_load, fault_rheostat)
-            speeds_freq.append(r["Speed (RPM)"])
-        else:
-            r = synchronous_motor_simulation(fault_voltage, f, poles, fault_load, excitation_factor, fault_rheostat)
-            speeds_freq.append(r["Speed (RPM)"])
-    ax2.plot(frequencies, speeds_freq, linewidth=2)
-    ax2.set_title("Speed vs Frequency")
-    ax2.set_xlabel("Frequency (Hz)")
-    ax2.set_ylabel("Speed (RPM)")
-    ax2.grid(True)
-    st.pyplot(fig2)
+fig, ax = plt.subplots()
+ax.plot(speeds, torques)
+ax.set_xlabel("Speed")
+ax.set_ylabel("Torque")
+st.pyplot(fig)
 
-    # Graph 3
-    fig3, ax3 = plt.subplots(figsize=(8, 5))
-    voltages = np.linspace(100, 500, 50)
-    currents_voltage = []
-    for v in voltages:
-        if motor_type == "Induction Motor":
-            r = induction_motor_simulation(v, fault_frequency, poles, slip, fault_load, fault_rheostat)
-            currents_voltage.append(r["Current (A)"])
-        else:
-            r = synchronous_motor_simulation(v, fault_frequency, poles, fault_load, excitation_factor, fault_rheostat)
-            currents_voltage.append(r["Current (A)"])
-    ax3.plot(voltages, currents_voltage, linewidth=2)
-    ax3.set_title("Current vs Voltage")
-    ax3.set_xlabel("Voltage (V)")
-    ax3.set_ylabel("Current (A)")
-    ax3.grid(True)
-    st.pyplot(fig3)
+# ---------------- EXPORT ----------------
+csv = df.to_csv(index=False).encode("utf-8")
+st.download_button("Download CSV", csv, "motor_results.csv")
 
-    # Graph 4
-    fig4, ax4 = plt.subplots(figsize=(8, 5))
-    torque_range = np.linspace(1, 100, 50)
-    efficiencies = []
-    for t in torque_range:
-        if motor_type == "Induction Motor":
-            r = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, t, fault_rheostat)
-            efficiencies.append(r["Efficiency (%)"])
-        else:
-            r = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, t, excitation_factor, fault_rheostat)
-            efficiencies.append(r["Efficiency (%)"])
-    ax4.plot(torque_range, efficiencies, linewidth=2)
-    ax4.set_title("Efficiency vs Load Torque")
-    ax4.set_xlabel("Load Torque (Nm)")
-    ax4.set_ylabel("Efficiency (%)")
-    ax4.grid(True)
-    st.pyplot(fig4)
-
-    # Graph 5
-    fig5, ax5 = plt.subplots(figsize=(8, 5))
-    rheostat_values = np.linspace(0, 5, 50)
-    currents_rheo = []
-    for rr in rheostat_values:
-        if motor_type == "Induction Motor":
-            r = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, fault_load, rr)
-            currents_rheo.append(r["Current (A)"])
-        else:
-            r = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, excitation_factor, rr)
-            currents_rheo.append(r["Current (A)"])
-    ax5.plot(rheostat_values, currents_rheo, linewidth=2)
-    ax5.set_title("Rheostat Resistance vs Current")
-    ax5.set_xlabel("Rheostat Resistance (Ohm)")
-    ax5.set_ylabel("Current (A)")
-    ax5.grid(True)
-    st.pyplot(fig5)
-
-    # Graph 6
-    fig6, ax6 = plt.subplots(figsize=(8, 5))
-    torques_rheo = []
-    for rr in rheostat_values:
-        if motor_type == "Induction Motor":
-            r = induction_motor_simulation(fault_voltage, fault_frequency, poles, slip, fault_load, rr)
-            torques_rheo.append(r["Torque (Nm)"])
-        else:
-            r = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, excitation_factor, rr)
-            torques_rheo.append(r["Torque (Nm)"])
-    ax6.plot(rheostat_values, torques_rheo, linewidth=2)
-    ax6.set_title("Rheostat Resistance vs Torque")
-    ax6.set_xlabel("Rheostat Resistance (Ohm)")
-    ax6.set_ylabel("Torque (Nm)")
-    ax6.grid(True)
-    st.pyplot(fig6)
-
-
-# TAB 3 - 3 PHASE WAVEFORMS
-
-with tab3:
-    st.markdown("## ⚡ 3-Phase Waveforms")
-
-    t = np.linspace(0, 0.04, 1000)
-    Vm = fault_voltage / np.sqrt(3)
-
-    phase_a = Vm * np.sin(2 * np.pi * fault_frequency * t)
-    phase_b = Vm * np.sin(2 * np.pi * fault_frequency * t - 2*np.pi/3)
-    phase_c = Vm * np.sin(2 * np.pi * fault_frequency * t + 2*np.pi/3)
-
-    figw, axw = plt.subplots(figsize=(10, 5))
-    axw.plot(t, phase_a, label="Phase A")
-    axw.plot(t, phase_b, label="Phase B")
-    axw.plot(t, phase_c, label="Phase C")
-    axw.set_title("3-Phase Voltage Waveforms")
-    axw.set_xlabel("Time (s)")
-    axw.set_ylabel("Voltage (V)")
-    axw.grid(True)
-    axw.legend()
-    st.pyplot(figw)
-
-
-# TAB 4 - COMPARISON
-
-with tab4:
-    st.markdown("## 🆚 Motor Comparison")
-
-    ind_result = induction_motor_simulation(fault_voltage, fault_frequency, poles, 0.04, fault_load, fault_rheostat)
-    syn_result = synchronous_motor_simulation(fault_voltage, fault_frequency, poles, fault_load, 1.0, fault_rheostat)
-
-    comp_df = pd.DataFrame({
-        "Parameter": ["Speed (RPM)", "Current (A)", "Torque (Nm)", "Efficiency (%)", "Power Factor", "Input Power (kW)", "Output Power (kW)", "Health Status"],
-        "Induction Motor": [
-            ind_result["Speed (RPM)"],
-            ind_result["Current (A)"],
-            ind_result["Torque (Nm)"],
-            ind_result["Efficiency (%)"],
-            ind_result["Power Factor"],
-            ind_result["Input Power (kW)"],
-            ind_result["Output Power (kW)"],
-            ind_result["Health Status"]
-        ],
-        "Synchronous Motor": [
-            syn_result["Speed (RPM)"],
-            syn_result["Current (A)"],
-            syn_result["Torque (Nm)"],
-            syn_result["Efficiency (%)"],
-            syn_result["Power Factor"],
-            syn_result["Input Power (kW)"],
-            syn_result["Output Power (kW)"],
-            syn_result["Health Status"]
-        ]
-    })
-
-    st.dataframe(comp_df, use_container_width=True)
-
-
-# TAB 5 - EXPORT
-
-with tab5:
-    st.markdown("## 📤 Export Results")
-
-    export_df = pd.DataFrame(result.items(), columns=["Parameter", "Value"])
-    csv = export_df.to_csv(index=False).encode("utf-8")
-
-    st.download_button(
-        label="📥 Download Current Results as CSV",
-        data=csv,
-        file_name="motorsim_results.csv",
-        mime="text/csv"
-    )
-
-    st.info("You can export the current motor simulation result table as a CSV file.")
-
-
- main
